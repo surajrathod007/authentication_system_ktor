@@ -14,14 +14,9 @@ import io.ktor.features.*
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 
-// JDBC_DRIVER = org.postgresql.Driver;
+ val JDBC_DRIVER = "org.postgresql.Driver";
 // JDBC_DATABASE_URL = jdbc:postgresql:{database_name}?properties={value}
-// JDBC_DATABASE_URL = jdbc:postgresql:auth_db?user=postgres&password=787250
-
-
-
-
-
+ val JDBC_DATABASE_URL = "jdbc:postgresql:demodb?user=postgres&password=POSTGRE51"
 
 
 @Suppress("unused") // Referenced in application.conf
@@ -48,7 +43,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            call.respondText("HELLO MANSH!", contentType = ContentType.Text.Plain)
         }
 
         get("/session/increment") {
