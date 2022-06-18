@@ -9,5 +9,6 @@ object UserTable : Table() {
     val mobileNo = varchar("mobileNo",256)
     val address = varchar("address",256)
     val token = varchar("token",64)
+    val otp = varchar("otp",64).nullable()
     override val primaryKey: PrimaryKey = PrimaryKey(emailId)
 }

@@ -8,5 +8,6 @@ data class User(
     val lastName : String,
     val mobileNo : String ="",
     val address : String ="",
-    val token : String = ""
+    val token : String = "",
+    val otp : String = ""
 ):Principal

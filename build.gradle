@@ -51,4 +51,6 @@ dependencies {
     implementation "org.postgresql:postgresql:$postgres_version"
     implementation "com.zaxxer:HikariCP:$hikari_version"
 
+    //simple email
+    implementation("org.apache.commons:commons-email:1.5")
 }

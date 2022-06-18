@@ -7,7 +7,10 @@ import com.example.model.User
 import com.example.repository.DatabaseFactory.dbQuery
 import com.example.table.LoginAuthTable
 import com.example.table.UserTable
-import org.jetbrains.exposed.sql.insert
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.withContext
+import org.jetbrains.exposed.sql.*
 
 class AuthQuery {
 
@@ -27,5 +30,25 @@ class AuthQuery {
             }
         }
     }
+
+    suspend fun insertOtp(email : String,otp : String){
+        dbQuery {
+
+            UserTable.update(where = {
+                UserTable.emailId.eq(email)
+            }) { t->
+                t[UserTable.otp] = otp
+            }
+        }
+    }
+
+    suspend fun otpExists(email : String,otp : String){
+
+            //Need to implement
+
+
+    }
+
+
 
 }

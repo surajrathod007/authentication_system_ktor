@@ -11,7 +11,11 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.SimpleEmail
 
+
+fun getUniqueNumber(length: Int) = (0..9).shuffled().take(length).joinToString("")
 fun Route.AuthRoutes(
 
     db : AuthQuery,
@@ -43,4 +47,51 @@ fun Route.AuthRoutes(
     // Forgot Password
 
     // OTP Service
+    post("auth/otp"){
+
+        val emails = try{
+            call.request.queryParameters["email"]
+        }catch (e : Exception){
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Provide Email"))
+            return@post
+        }
+
+
+        if(!emails.isNullOrEmpty()){
+            //send otp
+
+                val otp = getUniqueNumber(4)
+
+            //send email
+
+            try {
+                val email = SimpleEmail()
+                email.hostName = "smtp.gmail.com"
+                email.setSmtpPort(465)
+                email.setAuthenticator(DefaultAuthenticator("surajsinhrathod75@gmail.com", "yoiejaafccusbokc"))
+                email.isSSLOnConnect = true
+                email.setFrom("surajsinhrathod75@gmail.com")
+                email.subject = "Reset/Forgot Password"
+                email.setMsg("Your Otp(One Time Password) \n\n\n $otp")
+                email.addTo(emails)
+                email.send()
+
+                //insert otp in database
+
+                db.insertOtp(emails,otp)
+
+                call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
+            }catch (e : Exception){
+                call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Otp Not Sent"))
+                return@post
+
+            }
+
+
+
+
+
+
+        }
+    }
 }
