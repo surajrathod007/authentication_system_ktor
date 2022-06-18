@@ -1,6 +1,10 @@
 package com.example
 
+import com.example.auth.JWTService
+import com.example.auth.hash
+import com.example.query.AuthQuery
 import com.example.repository.DatabaseFactory
+import com.example.routes.AuthRoutes
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -18,6 +22,10 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
+
+    val authDb = AuthQuery()
+    val jwtService = JWTService()
+    val makeHash = {s:String -> hash(s) }
 
     DatabaseFactory.init()
 
@@ -37,6 +45,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
+        AuthRoutes(authDb,jwtService,makeHash)
         get("/") {
             call.respondText("HELLO MANSH!", contentType = ContentType.Text.Plain)
         }

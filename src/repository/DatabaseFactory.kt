@@ -1,6 +1,8 @@
 package com.example.repository
 
 import com.example.JDBC
+import com.example.table.LoginAuthTable
+import com.example.table.UserTable
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -8,6 +10,7 @@ import jdk.nashorn.internal.scripts.JD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
@@ -16,6 +19,10 @@ object DatabaseFactory {
     fun init()
     {
         Database.connect(hikari())
+        transaction {
+            SchemaUtils.create(UserTable)
+            SchemaUtils.create(LoginAuthTable)
+        }
     }
 
     fun hikari() : HikariDataSource{
