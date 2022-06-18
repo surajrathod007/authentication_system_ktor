@@ -14,11 +14,6 @@ import io.ktor.features.*
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 
- val JDBC_DRIVER = "org.postgresql.Driver";
-// JDBC_DATABASE_URL = jdbc:postgresql:{database_name}?properties={value}
- val JDBC_DATABASE_URL = "jdbc:postgresql:demodb?user=postgres&password=POSTGRE51"
-
-
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
