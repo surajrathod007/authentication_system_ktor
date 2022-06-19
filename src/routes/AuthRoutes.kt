@@ -46,6 +46,46 @@ fun Route.AuthRoutes(
 
     // Forgot Password
 
+    post("auth/resetpassword"){
+
+        val email = try{
+            call.request.queryParameters["email"]
+        }catch (e : Exception){
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Provide Email"))
+            return@post
+        }
+
+        val otp = try{
+            call.request.queryParameters["otp"]
+        }catch (e : Exception){
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Provide Otp"))
+            return@post
+
+        }
+
+        val newpas = try{
+            call.request.queryParameters["newpas"]
+        }catch (e : Exception){
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Provide Newpas"))
+            return@post
+
+        }
+
+        if(db.otpExists(email!!,otp!!) == 1){
+
+            //update password
+            db.updatePassword(email,newpas!!)
+
+            //remove otp
+            db.removeOtp(email)
+            call.respond(HttpStatusCode.OK,SimpleResponse(true,"Password Changed Succesfully"))
+
+        }else{
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Otp Mismatch"))
+        }
+
+    }
+
     // OTP Service
     post("auth/otp"){
 
@@ -80,16 +120,13 @@ fun Route.AuthRoutes(
 
                 db.insertOtp(emails,otp)
 
-                call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
+                    call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
+
             }catch (e : Exception){
                 call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Otp Not Sent"))
                 return@post
 
             }
-
-
-
-
 
 
         }

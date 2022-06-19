@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class AuthQuery {
 
@@ -42,11 +43,38 @@ class AuthQuery {
         }
     }
 
-    suspend fun otpExists(email : String,otp : String){
+    //for otp usage
+    var c : Long = 0
 
-            //Need to implement
+    suspend fun otpExists(email : String,otp : String) : Int{
 
+        transaction {
+            c = UserTable.select { UserTable.otp.eq(otp) and UserTable.emailId.eq(email) }.count()
+        }
+        return c.toInt()
+    }
 
+    //update password
+
+    suspend fun updatePassword(email : String,newPass : String){
+        dbQuery {
+            LoginAuthTable.update({
+                LoginAuthTable.emailId.eq(email)
+            }) { t->
+                t[LoginAuthTable.hashPassword] = hash(newPass)
+            }
+        }
+    }
+
+    suspend fun removeOtp(email : String){
+        dbQuery {
+            UserTable.update({
+                UserTable.emailId.eq(email)
+            }) { t->
+
+                t[UserTable.otp] = null
+            }
+        }
     }
 
 
