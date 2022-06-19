@@ -44,6 +44,29 @@ fun Route.AuthRoutes(
 
     // Login
 
+    post("auth/login"){
+        val loginCredential = try {
+            call.receive<LoginReq>()
+        }catch (e : Exception){
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Inproper User Credentials"))
+            return@post
+        }
+        try{
+            val user = db.findUserByEmail(loginCredential.emailId)
+            if(user == null){
+                call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"User not found"))
+            }else{
+                if(user.hashPassword == hash(loginCredential.password)){
+                    call.respond(HttpStatusCode.OK,SimpleResponse(true,jwtService.generateToken(user)))
+                }else{
+                    call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"incorrect password"))
+                }
+            }
+        }catch (e:Exception){
+            call.respond(HttpStatusCode.Conflict,SimpleResponse(false,e.message?:"Something went wrong"))
+        }
+    }
+
     // Forgot Password
 
     post("auth/resetpassword"){
