@@ -3,8 +3,10 @@ package com.example
 import com.example.auth.JWTService
 import com.example.auth.hash
 import com.example.query.AuthQuery
+import com.example.query.UserQuery
 import com.example.repository.DatabaseFactory
 import com.example.routes.AuthRoutes
+import com.example.routes.UserRoutes
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -24,6 +26,7 @@ fun Application.module(testing: Boolean = false) {
 
 
     val authDb = AuthQuery()
+    val userDb = UserQuery()
     val jwtService = JWTService()
     val makeHash = {s:String -> hash(s) }
 
@@ -46,18 +49,9 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         AuthRoutes(authDb,jwtService,makeHash)
+        UserRoutes(userDb)
         get("/") {
             call.respondText("HELLO MANSH!", contentType = ContentType.Text.Plain)
-        }
-
-        get("/session/increment") {
-            val session = call.sessions.get<MySession>() ?: MySession()
-            call.sessions.set(session.copy(count = session.count + 1))
-            call.respondText("Counter is ${session.count}. Refresh to increment.")
-        }
-
-        get("/json/gson") {
-            call.respond(mapOf("hello" to "world"))
         }
     }
 }
