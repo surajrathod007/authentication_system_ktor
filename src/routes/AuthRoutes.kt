@@ -131,9 +131,9 @@ fun Route.AuthRoutes(
                 val email = SimpleEmail()
                 email.hostName = "smtp.gmail.com"
                 email.setSmtpPort(465)
-                email.setAuthenticator(DefaultAuthenticator("surajsinhrathod75@gmail.com", "yoiejaafccusbokc"))
+                email.setAuthenticator(DefaultAuthenticator("bcapractical007@gmail.com", "hbfovxszpxxolayy"))
                 email.isSSLOnConnect = true
-                email.setFrom("surajsinhrathod75@gmail.com")
+                email.setFrom("bcapractical007@gmail.com")
                 email.subject = "Reset/Forgot Password"
                 email.setMsg("Your Otp(One Time Password) \n\n\n $otp")
                 email.addTo(emails)
