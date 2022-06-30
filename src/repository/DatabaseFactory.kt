@@ -28,8 +28,8 @@ object DatabaseFactory {
     fun hikari() : HikariDataSource{
         val config = HikariConfig()
 
-        config.driverClassName = JDBC.JDBC_DRIVER
-        config.jdbcUrl = JDBC.JDBC_DATABASE_URL
+        config.driverClassName = "org.postgresql.Driver"
+        config.jdbcUrl = "jdbc:postgresql:demodb?user=postgres&password=POSTGRE"
         config.maximumPoolSize = 3
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
