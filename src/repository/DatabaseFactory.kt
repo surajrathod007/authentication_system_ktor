@@ -6,7 +6,6 @@ import com.example.table.UserTable
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import jdk.nashorn.internal.scripts.JD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
@@ -28,8 +27,8 @@ object DatabaseFactory {
     fun hikari() : HikariDataSource{
         val config = HikariConfig()
 
-        config.driverClassName = "org.postgresql.Driver"
-        config.jdbcUrl = "jdbc:postgresql:demodb?user=postgres&password=POSTGRE"
+        config.driverClassName = JDBC.JDBC_DRIVER
+        config.jdbcUrl = JDBC.JDBC_DATABASE_URL
         config.maximumPoolSize = 3
         config.isAutoCommit = false
         config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
