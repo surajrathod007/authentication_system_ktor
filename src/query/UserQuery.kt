@@ -36,7 +36,7 @@ class UserQuery {
             UserTable.update(where =  {
                 UserTable.emailId.eq(emailId)
             }){ t->
-                t[token] = null
+                t[token] = ""
             }
         }
     }
