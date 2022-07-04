@@ -6,6 +6,7 @@ import com.example.model.RegisterReq
 import com.example.model.SimpleResponse
 import com.example.model.User
 import com.example.query.AuthQuery
+import com.example.query.UserQuery
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -23,6 +24,7 @@ fun Route.AuthRoutes(
     hash : (String) -> String
 
 ){
+    val uq = UserQuery()
     // Register
 
     post("auth/register") {
@@ -57,7 +59,9 @@ fun Route.AuthRoutes(
                 call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"User not found"))
             }else{
                 if(user.hashPassword == hash(loginCredential.password)){
-                    call.respond(HttpStatusCode.OK,SimpleResponse(true,jwtService.generateToken(user)))
+                    val jwtToken = jwtService.generateToken(user)
+                    uq.setToken(user.emailId,jwtToken)
+                    call.respond(HttpStatusCode.OK,SimpleResponse(true,jwtToken))
                 }else{
                     call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"incorrect password"))
                 }

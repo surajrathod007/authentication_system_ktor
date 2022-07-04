@@ -22,4 +22,22 @@ class UserQuery {
             }
         }
     }
+    suspend fun setToken(emailId : String,jwtToken : String){
+        DatabaseFactory.dbQuery {
+            UserTable.update(where =  {
+                UserTable.emailId.eq(emailId)
+            }){ t->
+                t[token] = jwtToken
+            }
+        }
+    }
+    suspend fun removeToken(emailId : String){
+        DatabaseFactory.dbQuery {
+            UserTable.update(where =  {
+                UserTable.emailId.eq(emailId)
+            }){ t->
+                t[token] = null
+            }
+        }
+    }
 }
