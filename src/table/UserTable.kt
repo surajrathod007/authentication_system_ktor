@@ -10,7 +10,7 @@ object UserTable : Table() {
     val lastName = varchar("lastName",64)
     val mobileNo = varchar("mobileNo",256)
     val address = varchar("address",256)
-    val token = varchar("token",64).nullable()
+    val token = varchar("token",512).nullable()
     val otp = varchar("otp",64).nullable()
     override val primaryKey: PrimaryKey = PrimaryKey(emailId)
 }
