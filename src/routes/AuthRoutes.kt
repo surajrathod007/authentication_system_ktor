@@ -97,10 +97,14 @@ fun Route.AuthRoutes(
                 if(user.token == providedToken){
                     uq.removeToken(user.emailId)
                     call.respond(HttpStatusCode.OK,SimpleResponse(true,"Log out Success"))
+                }else{
+                    call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"Unauthorized"))
                 }
             }else{
-                call.respond(HttpStatusCode.OK,SimpleResponse(true,"User id not found"))
+                call.respond(HttpStatusCode.NotFound,SimpleResponse(false,"User id not found"))
             }
+        }else{
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Insufficient Data Provided"))
         }
 
     }
