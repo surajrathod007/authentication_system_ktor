@@ -76,6 +76,35 @@ fun Route.AuthRoutes(
         }
     }
 
+    // Log out
+    post("auth/logout"){
+        val providedEmailId = try {
+            call.request.queryParameters["email"]
+        }catch (e:Exception){
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"provide email"))
+            return@post
+        }
+        val providedToken = try {
+            call.request.queryParameters["token"]
+        }catch (e:Exception){
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"provide token"))
+            return@post
+        }
+
+        if(!providedEmailId.isNullOrEmpty() && !providedToken.isNullOrEmpty()){
+            val user = uq.findUserByEmailId(providedEmailId)
+            if (user != null) {
+                if(user.token == providedToken){
+                    uq.removeToken(user.emailId)
+                    call.respond(HttpStatusCode.OK,SimpleResponse(true,"Log out Success"))
+                }
+            }else{
+                call.respond(HttpStatusCode.OK,SimpleResponse(true,"User id not found"))
+            }
+        }
+
+    }
+
     // Forgot Password
 
     post("auth/resetpassword"){
