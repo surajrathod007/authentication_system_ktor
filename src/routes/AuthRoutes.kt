@@ -91,28 +91,30 @@ fun Route.AuthRoutes(
             return@post
         }
 
-        if(!providedEmailId.isNullOrEmpty() && !providedToken.isNullOrEmpty()){
-            val userAuth = db.findUserByEmail(providedEmailId)
-
-           if(userAuth!=null){
-               val user = uq.findUserByEmailId(userAuth.emailId)
-               if (user != null) {
-                   if(user.token == providedToken){
-                       uq.removeToken(user.emailId)
-                       call.respond(HttpStatusCode.OK,SimpleResponse(true,"Log out Success"))
-                   }else{
-                       call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"Unauthorized"))
-                   }
-               }else{
-                   call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"cant find user"))
-               }
-           }else{
-               call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"User id not found"))
-           }
-           }else{
+        if(providedEmailId.isNullOrEmpty() || providedToken.isNullOrEmpty()){
             call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Insufficient Data Provided"))
+            return@post
         }
 
+        val userAuth = db.findUserByEmail(providedEmailId)
+        if(userAuth==null){
+            call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"User id not found"))
+            return@post
+        }
+
+        val user = uq.findUserByEmailId(userAuth.emailId)
+        if (user == null) {
+            call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"cant find user"))
+            return@post
+        }
+
+        if(user.token != providedToken) {
+            call.respond(HttpStatusCode.Conflict, SimpleResponse(false, "Unauthorized"))
+            return@post
+        }
+
+        uq.removeToken(user.emailId)
+        call.respond(HttpStatusCode.OK,SimpleResponse(true,"Log out Success"))
     }
 
     // Forgot Password
