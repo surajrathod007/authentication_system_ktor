@@ -92,20 +92,24 @@ fun Route.AuthRoutes(
         }
 
         if(!providedEmailId.isNullOrEmpty() && !providedToken.isNullOrEmpty()){
-            val user = uq.findUserByEmailId(providedEmailId)
-            if (user != null) {
-                if(user.token == providedToken){
-                    uq.removeToken(user.emailId)
-                    call.respond(HttpStatusCode.OK,SimpleResponse(true,"Log out Success"))
-                }else{
-                    call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"Unauthorized"))
-                }
-            }else{
-                call.respond(HttpStatusCode.NotFound,SimpleResponse(false,"User id not found"))
-            }
-        }else{
-            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Insufficient Data Provided"))
-        }
+            val userAuth = db.findUserByEmail(providedEmailId)
+
+           if(userAuth!=null){
+               val user = uq.findUserByEmailId(userAuth.emailId)
+               if (user != null) {
+                   if(user.token == providedToken){
+                       uq.removeToken(user.emailId)
+                       call.respond(HttpStatusCode.OK,SimpleResponse(true,"Log out Success"))
+                   }else{
+                       call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"Unauthorized"))
+                   }
+               }else{
+                   call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"User id not found"))
+               }
+           }else{
+               call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Insufficient Data Provided"))
+           }
+           }
 
     }
 
