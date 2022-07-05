@@ -61,8 +61,12 @@ fun Route.AuthRoutes(
                 if(user.hashPassword == hash(loginCredential.password)){
                     val jwtToken = jwtService.generateToken(user)
                     uq.setToken(user.emailId,jwtToken)
-//                    val customer = uq.findUserByEmailId(loginCredential.emailId)
-                    call.respond(HttpStatusCode.OK,User("","",""))
+                    val customer = uq.findUserByEmailId(user.emailId)
+                    if(customer!= null){
+                        call.respond(HttpStatusCode.OK,customer!!)
+                    }else{
+                        call.respond(HttpStatusCode.OK,"Customer Not Found")
+                    }
                 }else{
                     call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"incorrect password"))
                 }

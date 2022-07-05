@@ -28,7 +28,7 @@ class UserQuery {
     }
     suspend fun findUserByEmailId(emailId: String) = DatabaseFactory.dbQuery {
         with(UserTable){
-            select {
+            select  {
                 this@with.emailId.eq(emailId)
             }.map {
                 convertRowToObject(it)
@@ -63,8 +63,8 @@ class UserQuery {
             row[UserTable.lastName],
             row[UserTable.mobileNo],
             row[UserTable.address],
-            row[UserTable.token]!!,
-            row[UserTable.otp]!!
+            row[UserTable.token],
+            row[UserTable.otp]
         )
     }
 }
