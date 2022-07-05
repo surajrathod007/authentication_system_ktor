@@ -104,12 +104,14 @@ fun Route.AuthRoutes(
                        call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"Unauthorized"))
                    }
                }else{
-                   call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"User id not found"))
+                   call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"cant find user"))
                }
            }else{
-               call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Insufficient Data Provided"))
+               call.respond(HttpStatusCode.Conflict,SimpleResponse(false,"User id not found"))
            }
-           }
+           }else{
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Insufficient Data Provided"))
+        }
 
     }
 
