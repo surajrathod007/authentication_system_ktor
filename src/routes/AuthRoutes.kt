@@ -53,27 +53,30 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Inproper User Credentials"))
             return@post
         }
-        try{
-            val user = db.findUserByEmail(loginCredential.emailId)
-            if(user == null){
-                call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"User not found"))
-            }else{
-                if(user.hashPassword == hash(loginCredential.password)){
-                    val jwtToken = jwtService.generateToken(user)
-                    uq.setToken(user.emailId,jwtToken)
-                    val customer = uq.findUserByEmailId(user.emailId)
-                    if(customer!= null){
-                        call.respond(HttpStatusCode.OK,customer!!)
-                    }else{
-                        call.respond(HttpStatusCode.OK,"Customer Not Found")
-                    }
-                }else{
-                    call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"incorrect password"))
-                }
-            }
-        }catch (e:Exception){
-            call.respond(HttpStatusCode.Conflict,SimpleResponse(false,e.message?:"Something went wrong"))
+
+        val user = db.findUserByEmail(loginCredential.emailId)
+
+        if(user == null) {
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "User not found"))
+            return@post
         }
+
+        if(user.hashPassword != hash(loginCredential.password)) {
+            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Wrong Password"))
+            return@post
+        }
+
+        val jwtToken = jwtService.generateToken(user)
+        uq.setToken(user.emailId,jwtToken)
+
+        val customer = uq.findUserByEmailId(user.emailId)
+        if(customer== null){
+            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Account Not Found"))
+            return@post
+        }
+
+        call.respond(HttpStatusCode.OK,customer)
+
     }
 
     // Log out
