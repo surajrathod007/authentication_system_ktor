@@ -170,14 +170,21 @@ fun Route.AuthRoutes(
         }
 
 
-        if(!emails.isNullOrEmpty()){
-            //send otp
+        if(emails.isNullOrEmpty()) {
+            call.respond(HttpStatusCode.OK,SimpleResponse(false,"Invalid Email"))
+            return@post
+        }
+        val user = db.findUserByEmail(emails)
+        if(user==null){
+            call.respond(HttpStatusCode.OK,SimpleResponse(false,"Account Doesn't Exist"))
+            return@post
+        }
 
-                val otp = getUniqueNumber(4)
+        //send otp
+        val otp = getUniqueNumber(4)
 
-            //send email
-
-            try {
+        //send email
+        try {
                 val email = SimpleEmail()
                 email.hostName = "smtp.gmail.com"
                 email.setSmtpPort(465)
@@ -192,16 +199,13 @@ fun Route.AuthRoutes(
                 //insert otp in database
 
                 db.insertOtp(emails,otp)
-
-                    call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
+                call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
 
             }catch (e : Exception){
-                call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Otp Not Sent"))
+                call.respond(HttpStatusCode.OK,SimpleResponse(false,"Otp Not Sent"))
                 return@post
 
             }
 
-
-        }
     }
 }
