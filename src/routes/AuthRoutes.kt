@@ -1,10 +1,7 @@
 package com.example.routes
 
 import com.example.auth.JWTService
-import com.example.model.LoginReq
-import com.example.model.RegisterReq
-import com.example.model.SimpleResponse
-import com.example.model.User
+import com.example.model.*
 import com.example.query.AuthQuery
 import com.example.query.UserQuery
 import io.ktor.application.*
@@ -50,19 +47,19 @@ fun Route.AuthRoutes(
         val loginCredential = try {
             call.receive<LoginReq>()
         }catch (e : Exception){
-            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Inproper User Credentials"))
+            call.respond(HttpStatusCode.OK,LoginResponse(SimpleResponse(false,"Inproper User Credentials"),))
             return@post
         }
 
         val user = db.findUserByEmail(loginCredential.emailId)
 
         if(user == null) {
-            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "User not found"))
+            call.respond(HttpStatusCode.OK, LoginResponse(SimpleResponse(false, "User not found")))
             return@post
         }
 
         if(user.hashPassword != hash(loginCredential.password)) {
-            call.respond(HttpStatusCode.BadRequest, SimpleResponse(false, "Wrong Password"))
+            call.respond(HttpStatusCode.OK, LoginResponse(SimpleResponse(false, "Wrong Password")))
             return@post
         }
 
@@ -71,11 +68,11 @@ fun Route.AuthRoutes(
 
         val customer = uq.findUserByEmailId(user.emailId)
         if(customer== null){
-            call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Account Not Found"))
+            call.respond(HttpStatusCode.OK,LoginResponse(SimpleResponse(false,"Account Not Found")))
             return@post
         }
 
-        call.respond(HttpStatusCode.OK,customer)
+        call.respond(HttpStatusCode.OK,LoginResponse(SimpleResponse(true,"Login Success"),customer))
 
     }
 
