@@ -31,7 +31,10 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Improper User Data"))
             return@post
         }
-
+        if(db.isEmailExists(userBody.emailId)==1){
+            call.respond(HttpStatusCode.OK,SimpleResponse(false,"Email is Already Registered !"))
+            return@post
+        }
         try {
             val user = User(userBody.emailId,userBody.firstName,userBody.lastName)
             db.insertUser(user,LoginReq(user.emailId,userBody.password))
@@ -169,10 +172,10 @@ fun Route.AuthRoutes(
             return@post
         }
 
-        if(db.isEmailExists(emails!!)==0){
+       /* if(db.isEmailExists(emails!!)==0){
             call.respond(HttpStatusCode.NotFound,SimpleResponse(false,"Email Does Not Exists In Our Database !"))
             return@post
-        }
+        }*/
 
 
         if(emails.isNullOrEmpty()) {

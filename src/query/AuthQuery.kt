@@ -72,13 +72,12 @@ class AuthQuery {
 
 
     //is email exists
-    var k : Long= 0
-    fun isEmailExists(email : String) : Int{
 
+    fun isEmailExists(email : String) : Int{
+        var k : Long= 0
         transaction {
             k = UserTable.select { UserTable.emailId.eq(email) }.count()
         }
-
         return k.toInt()
     }
 
