@@ -169,6 +169,11 @@ fun Route.AuthRoutes(
             return@post
         }
 
+        if(db.isEmailExists(emails!!)==0){
+            call.respond(HttpStatusCode.NotFound,SimpleResponse(false,"Email Does Not Exists In Our Database !"))
+            return@post
+        }
+
 
         if(emails.isNullOrEmpty()) {
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Invalid Email"))
