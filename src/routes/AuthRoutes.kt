@@ -182,8 +182,7 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Invalid Email"))
             return@post
         }
-        val user = db.findUserByEmail(emails)
-        if(user==null){
+        if(db.isEmailExists(emails)==0) {
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Account Doesn't Exist"))
             return@post
         }
