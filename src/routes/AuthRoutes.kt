@@ -31,7 +31,7 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Improper User Data"))
             return@post
         }
-        if(db.isEmailExists(userBody.emailId)==1){
+        if(db.isEmailExists(userBody.emailId)){
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Email is Already Registered !"))
             return@post
         }
@@ -182,7 +182,7 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Invalid Email"))
             return@post
         }
-        if(db.isEmailExists(emails)==0) {
+        if(db.isEmailExists(emails)) {
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Account Doesn't Exist"))
             return@post
         }
