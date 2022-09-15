@@ -148,6 +148,9 @@ fun Route.AuthRoutes(
 
         }
 
+
+        //old code
+        /*
         if(db.otpExists(email!!,otp!!) == 1){
 
             //update password
@@ -159,6 +162,16 @@ fun Route.AuthRoutes(
 
         }else{
             call.respond(HttpStatusCode.BadRequest,SimpleResponse(false,"Otp Mismatch"))
+        }
+
+         */
+
+        try{
+            db.updatePassword(email!!,newpas!!)
+            call.respond(HttpStatusCode.OK,SimpleResponse(true,"Password changed success"))
+
+        }catch (e : Exception){
+            call.respond(HttpStatusCode.Conflict,SimpleResponse(false,e.message.toString()))
         }
 
     }
