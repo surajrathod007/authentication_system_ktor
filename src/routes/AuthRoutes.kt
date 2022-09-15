@@ -31,6 +31,7 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.BadRequest, SimpleResponse(false,"Improper User Data"))
             return@post
         }
+
         if(db.isEmailExists(userBody.emailId)){
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Email is Already Registered !"))
             return@post
@@ -182,7 +183,7 @@ fun Route.AuthRoutes(
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Invalid Email"))
             return@post
         }
-        if(db.isEmailExists(emails)) {
+        if(!db.isEmailExists(emails)) {
             call.respond(HttpStatusCode.OK,SimpleResponse(false,"Account Doesn't Exist"))
             return@post
         }
@@ -205,9 +206,9 @@ fun Route.AuthRoutes(
 
                 //insert otp in database
 
-                db.insertOtp(emails,otp)
-                call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
-
+               // db.insertOtp(emails,otp)
+//                call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
+            call.respond(HttpStatusCode.OK,otp)
             }catch (e : Exception){
                 call.respond(HttpStatusCode.OK,SimpleResponse(false,"Otp Not Sent"))
                 return@post

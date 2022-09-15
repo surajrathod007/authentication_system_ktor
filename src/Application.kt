@@ -7,6 +7,7 @@ import com.example.query.UserQuery
 import com.example.repository.DatabaseFactory
 import com.example.routes.AuthRoutes
 import com.example.routes.UserRoutes
+import com.example.table.UserTable
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -16,6 +17,7 @@ import io.ktor.sessions.*
 import io.ktor.auth.*
 import io.ktor.gson.*
 import io.ktor.features.*
+import org.jetbrains.exposed.sql.selectAll
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -24,7 +26,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-
+   
     val authDb = AuthQuery()
     val userDb = UserQuery()
     val jwtService = JWTService()
@@ -48,10 +50,13 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
+
         AuthRoutes(authDb,jwtService,makeHash)
         UserRoutes(userDb)
-        get("/") {
+        get("/stats") {
             call.respondText("HELLO MANSH!", contentType = ContentType.Text.Plain)
+            // Should print complete table
+            call.respondText( "${UserTable.selectAll()}")
         }
     }
 }
