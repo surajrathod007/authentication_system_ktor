@@ -208,7 +208,7 @@ fun Route.AuthRoutes(
 
                // db.insertOtp(emails,otp)
 //                call.respond(HttpStatusCode.OK,SimpleResponse(true,"Otp Sent SuccesFully"))
-            call.respond(HttpStatusCode.OK,otp)
+            call.respond(HttpStatusCode.OK,SimpleResponse(true,otp))
             }catch (e : Exception){
                 call.respond(HttpStatusCode.OK,SimpleResponse(false,"Otp Not Sent"))
                 return@post
