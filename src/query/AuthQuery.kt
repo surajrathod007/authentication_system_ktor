@@ -76,7 +76,7 @@ class AuthQuery {
     fun isEmailExists(email : String) : Boolean{
 
         return transaction {
-                return@transaction UserTable.select { UserTable.emailId.eq(email) }.count()
+                UserTable.select { UserTable.emailId.eq(email) }.count()
             }==1L
 
     }
